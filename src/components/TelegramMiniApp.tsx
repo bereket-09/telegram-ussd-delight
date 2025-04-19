@@ -34,6 +34,12 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
     }
   };
 
+  const handleStartSession = () => {
+    onInput('start');
+  };
+
+  const isStartScreen = !isLoading && response.message === 'Welcome to TeleUSSD!\n\nLoading menu...';
+
   return (
     <div className="mini-app-container">
       <div className="bg-[#1A1F2C] text-white p-4 sticky top-0 z-10 shadow-md">
@@ -42,7 +48,7 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
             variant="ghost" 
             className="p-0 text-white" 
             onClick={() => onInput('back')}
-            disabled={isLoading}
+            disabled={isLoading || isStartScreen}
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -51,12 +57,12 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
       </div>
       
       <div className="p-4 max-w-md mx-auto">
-        {response.type === 'menu' && response.message === 'Welcome to TeleUSSD\n\nPlease select a service:' ? (
+        {isStartScreen ? (
           <div className="text-center py-8">
             <Button 
               size="lg"
-              className="bg-[#9b87f5] hover:bg-[#7E69AB] text-white font-bold py-6 px-8 rounded-lg shadow-lg transition-all duration-300 mb-6"
-              onClick={() => onInput('start')}
+              className="bg-[#49b349] hover:bg-[#378937] text-white font-bold py-6 px-8 rounded-lg shadow-lg transition-all duration-300 mb-6"
+              onClick={handleStartSession}
               disabled={isLoading}
             >
               <Phone className="w-6 h-6 mr-2" />
@@ -94,11 +100,11 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                         }
                         value={userInput}
                         onChange={handleInputChange}
-                        className="w-full border-[#9b87f5] focus:ring-[#7E69AB]"
+                        className="w-full border-[#49b349] focus:ring-[#378937]"
                       />
                       <Button 
                         type="submit" 
-                        className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]" 
+                        className="w-full bg-[#49b349] hover:bg-[#378937]" 
                         disabled={isLoading || !userInput.trim()}
                       >
                         Submit
@@ -114,8 +120,8 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                           variant={option.id === 'back' ? "outline" : "default"}
                           className={`w-full justify-start text-left ${
                             option.id === 'back' 
-                              ? 'border-[#9b87f5] text-[#9b87f5] hover:bg-[#9b87f5] hover:text-white' 
-                              : 'bg-[#9b87f5] hover:bg-[#7E69AB] text-white'
+                              ? 'border-[#49b349] text-[#49b349] hover:bg-[#49b349] hover:text-white' 
+                              : 'bg-[#49b349] hover:bg-[#378937] text-white'
                           }`}
                           onClick={() => onInput(option.id)}
                           disabled={isLoading}
@@ -135,7 +141,7 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                   
                   {(response.type === 'message' || response.type === 'end') && (
                     <Button 
-                      className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]" 
+                      className="w-full bg-[#49b349] hover:bg-[#378937]" 
                       onClick={() => onInput('start')}
                       disabled={isLoading}
                     >

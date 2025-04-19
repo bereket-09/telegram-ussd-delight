@@ -11,28 +11,7 @@ const Index = () => {
     type: 'menu',
     message: 'Welcome to TeleUSSD!\n\nLoading menu...',
   });
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        setIsLoading(true);
-        const result = await processUssdRequest(session, 'start');
-        setSession(result.session);
-        setCurrentResponse(result.response);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to initialize USSD service",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeApp();
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInput = async (input: string) => {
     try {
@@ -50,6 +29,8 @@ const Index = () => {
       setIsLoading(false);
     }
   };
+
+  // Don't initialize automatically anymore - wait for user to click "Dial USSD"
 
   return (
     <div className="min-h-screen bg-background">
