@@ -83,12 +83,21 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
               ) : (
                 <div className="space-y-6">
                   <div className="space-y-4">
-                    <h2 className="text-xl font-semibold text-[#1A1F2C] dark:text-white">{
-                      response.type === 'menu' ? 'Menu Options' :
-                      response.type === 'input' ? 'Input Required' :
-                      response.type === 'end' ? 'Transaction Complete' : 'Message'
-                    }</h2>
-                    <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{response.message}</p>
+                    <h2 className="text-xl font-semibold text-[#1A1F2C] dark:text-white mb-4">
+                      {response.type === 'menu' ? 'Menu Options' :
+                       response.type === 'input' ? 'Input Required' :
+                       response.type === 'end' ? 'Transaction Complete' : 'Message'}
+                    </h2>
+                    <div className="space-y-4">
+                      {response.message.split('\n').map((line, index) => (
+                        <p key={index} className={`
+                          ${index === 0 ? 'text-lg font-medium text-[#49b349]' : 'text-gray-700 dark:text-gray-300'}
+                          ${line.trim().startsWith('Transaction ID:') ? 'font-mono text-sm' : ''}
+                        `}>
+                          {line}
+                        </p>
+                      ))}
+                    </div>
                   </div>
                   
                   {response.type === 'input' && (
@@ -130,14 +139,10 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                           onClick={() => onInput(option.id)}
                           disabled={isLoading}
                         >
-                          {option.text.includes('\n') ? (
-                            <div className="flex gap-2">
-                              <span className="text-sm font-bold">{option.text.split('\n')[0]}</span>
-                              <span>{option.text.split('\n')[1]}</span>
-                            </div>
-                          ) : (
-                            option.text
-                          )}
+                          <div className="flex gap-2 items-center">
+                            <span className="text-sm font-bold w-6">{option.id === 'back' ? '↩' : `${response.options?.indexOf(option) + 1}.`}</span>
+                            <span>{option.text}</span>
+                          </div>
                         </Button>
                       ))}
                     </div>
@@ -153,10 +158,19 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                     </Button>
                   )}
                   
-                  {response.footer && (
+                  {(response.footer || !isStartScreen) && (
                     <>
                       <Separator className="my-4" />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 text-center">{response.footer}</p>
+                      <div className="space-y-2">
+                        {response.footer && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{response.footer}</p>
+                        )}
+                        <div className="text-xs text-gray-500 dark:text-gray-400 text-right space-y-1">
+                          <p>Name: John Doe</p>
+                          <p>MSISDN: 251700405140</p>
+                          <p>Last updated: {new Date().toLocaleString()}</p>
+                        </div>
+                      </div>
                     </>
                   )}
                 </div>
