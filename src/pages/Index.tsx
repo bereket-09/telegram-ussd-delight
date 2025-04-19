@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import TelegramMiniApp from '@/components/TelegramMiniApp';
 import { createSession, getCurrentMenu, processUssdRequest, UssdResponse } from '@/lib/ussd-service';
@@ -30,10 +30,8 @@ const Index = () => {
     }
   };
 
-  // Don't initialize automatically anymore - wait for user to click "Dial USSD"
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-[#f0f2f5] to-white dark:from-[#1a1f2c] dark:to-[#2d3748]">
       <TelegramMiniApp
         response={currentResponse}
         onInput={handleInput}

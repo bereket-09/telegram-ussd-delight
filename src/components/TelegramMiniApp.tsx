@@ -41,50 +41,54 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
   const isStartScreen = !isLoading && response.message === 'Welcome to TeleUSSD!\n\nLoading menu...';
 
   return (
-    <div className="mini-app-container">
-      <div className="bg-[#1A1F2C] text-white p-4 sticky top-0 z-10 shadow-md">
+    <div className="mini-app-container bg-gradient-to-br from-[#f0f2f5] to-white dark:from-[#1a1f2c] dark:to-[#2d3748]">
+      <div className="bg-gradient-to-r from-[#49b349] to-[#378937] text-white p-4 sticky top-0 z-10 shadow-lg">
         <div className="flex items-center gap-2">
           <Button 
             variant="ghost" 
-            className="p-0 text-white" 
+            className="p-0 text-white hover:bg-white/20" 
             onClick={() => onInput('back')}
             disabled={isLoading || isStartScreen}
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-lg font-semibold">USSD Service</h1>
+          <h1 className="text-lg font-semibold">Safaricom USSD Service</h1>
         </div>
       </div>
       
       <div className="p-4 max-w-md mx-auto">
         {isStartScreen ? (
-          <div className="text-center py-8">
+          <div className="text-center py-12">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-[#49b349] mb-2">Welcome to Safaricom USSD</h2>
+              <p className="text-gray-600 dark:text-gray-400">Access your services with one click</p>
+            </div>
             <Button 
               size="lg"
-              className="bg-[#49b349] hover:bg-[#378937] text-white font-bold py-6 px-8 rounded-lg shadow-lg transition-all duration-300 mb-6"
+              className="bg-[#49b349] hover:bg-[#378937] text-white font-bold py-8 px-10 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
               onClick={handleStartSession}
               disabled={isLoading}
             >
-              <Phone className="w-6 h-6 mr-2" />
+              <Phone className="w-8 h-8 mr-3" />
               Dial USSD *777#
             </Button>
           </div>
         ) : (
-          <Card className="bg-white border-none shadow-md">
-            <CardContent className="p-4">
+          <Card className="bg-white/80 backdrop-blur-sm border-none shadow-xl">
+            <CardContent className="p-6">
               {isLoading ? (
                 <div className="py-8 flex justify-center">
-                  <div className="typing-indicator pulse">Loading</div>
+                  <div className="typing-indicator pulse">Processing your request</div>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <h2 className="text-xl font-semibold text-[#1A1F2C]">{
-                      response.type === 'menu' ? 'Menu' :
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold text-[#1A1F2C] dark:text-white">{
+                      response.type === 'menu' ? 'Menu Options' :
                       response.type === 'input' ? 'Input Required' :
                       response.type === 'end' ? 'Transaction Complete' : 'Message'
                     }</h2>
-                    <p className="whitespace-pre-line text-[#1A1F2C]">{response.message}</p>
+                    <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{response.message}</p>
                   </div>
                   
                   {response.type === 'input' && (
@@ -100,11 +104,11 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                         }
                         value={userInput}
                         onChange={handleInputChange}
-                        className="w-full border-[#49b349] focus:ring-[#378937]"
+                        className="w-full border-[#49b349] focus:ring-[#378937] text-lg"
                       />
                       <Button 
                         type="submit" 
-                        className="w-full bg-[#49b349] hover:bg-[#378937]" 
+                        className="w-full bg-[#49b349] hover:bg-[#378937] transition-colors duration-300" 
                         disabled={isLoading || !userInput.trim()}
                       >
                         Submit
@@ -113,22 +117,22 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                   )}
                   
                   {response.type === 'menu' && response.options && (
-                    <div className="space-y-2 pt-2">
+                    <div className="space-y-3">
                       {response.options.map((option) => (
                         <Button
                           key={option.id}
                           variant={option.id === 'back' ? "outline" : "default"}
-                          className={`w-full justify-start text-left ${
+                          className={`w-full justify-start text-left p-4 ${
                             option.id === 'back' 
                               ? 'border-[#49b349] text-[#49b349] hover:bg-[#49b349] hover:text-white' 
                               : 'bg-[#49b349] hover:bg-[#378937] text-white'
-                          }`}
+                          } transition-all duration-300 transform hover:translate-x-1`}
                           onClick={() => onInput(option.id)}
                           disabled={isLoading}
                         >
                           {option.text.includes('\n') ? (
                             <div className="flex gap-2">
-                              <span className="text-sm">{option.text.split('\n')[0]}.</span>
+                              <span className="text-sm font-bold">{option.text.split('\n')[0]}</span>
                               <span>{option.text.split('\n')[1]}</span>
                             </div>
                           ) : (
@@ -141,7 +145,7 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                   
                   {(response.type === 'message' || response.type === 'end') && (
                     <Button 
-                      className="w-full bg-[#49b349] hover:bg-[#378937]" 
+                      className="w-full bg-[#49b349] hover:bg-[#378937] transition-colors duration-300" 
                       onClick={() => onInput('start')}
                       disabled={isLoading}
                     >
@@ -151,8 +155,8 @@ const TelegramMiniApp: React.FC<TelegramMiniAppProps> = ({
                   
                   {response.footer && (
                     <>
-                      <Separator />
-                      <p className="text-xs text-[#8E9196]">{response.footer}</p>
+                      <Separator className="my-4" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 text-center">{response.footer}</p>
                     </>
                   )}
                 </div>
